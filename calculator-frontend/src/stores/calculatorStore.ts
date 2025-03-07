@@ -67,10 +67,16 @@ export const useCalculatorStore = defineStore('calculator', () => {
       console.log('Sending expression to backend:', expression)
       const response = await axios.post('http://localhost:8080/api/calculate', { expression })
       const data = response.data
-      ansValue.value = data.result
-      combineResults(expression, data.result)
+      if (data.result === 'error') {
+        console.error('Calculation error for expression:', expression)
+        combineResults(expression, 'Error')
+      } else {
+        ansValue.value = data.result
+        combineResults(expression, data.result)
+      }
     } catch (error) {
       console.error('Calculation error with backend:', error)
+      combineResults(expression, 'Error')
     }
   }
 

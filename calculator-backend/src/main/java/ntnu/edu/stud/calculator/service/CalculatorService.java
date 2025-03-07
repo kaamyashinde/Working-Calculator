@@ -16,19 +16,19 @@ public class CalculatorService {
     try {
       if (expression == null || expression.trim().isEmpty()) {
         logger.error("Error: Empty expression");
-        return "Error: Empty expression";
+        return "error";
       }
 
       String sanitizedExpression = expression.replaceAll("--", "+");
 
       if (sanitizedExpression.matches(".*[+\\-*/]$")) {
         logger.error("Error: Invalid expression format: {}", sanitizedExpression);
-        return "Error: Invalid expression format: " + sanitizedExpression;
+        return "error";
       }
 
       if (sanitizedExpression.matches(".*\\/0(?!\\d).*")) {
         logger.error("Error: Division by zero for expression: {}", sanitizedExpression);
-        return "undefined";
+        return "error";
       }
 
       logger.info("Evaluating: {}", sanitizedExpression);
@@ -38,7 +38,7 @@ public class CalculatorService {
 
       if (engine == null) {
         logger.error("Error: JavaScript engine not available");
-        return "Error: JavaScript engine not available";
+        return "error";
       }
 
       Object resultObj = engine.eval(sanitizedExpression);
@@ -48,7 +48,7 @@ public class CalculatorService {
 
     } catch (Exception e) {
       logger.error("Calculation error: {}", e.getMessage(), e);
-      return "Error: " + e.getMessage();
+      return "error";
     }
   }
 }
