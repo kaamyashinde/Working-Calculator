@@ -73,35 +73,131 @@ export default {
 </script>
 
 <template>
-<button id="loginBtn" @click="switchToRegister">Don't have an account? Register here</button>
-<div id="formContainer">
-  <form @submit.prevent="loginUser">
-    <div id="formTitle">
-      <label>Login</label>
-    </div>
-    <div id="username">
-      <label id="usernameLabel">Username: </label>
-      <input type="text" v-model="username" />
-      <span id="usernameErrSpan">{{ usernameError }}</span>
-    </div>
+  <div class="auth-container">
+    <button id="loginBtn" @click="switchToRegister">Don't have an account? Register here</button>
+    <div id="formContainer">
+      <form @submit.prevent="loginUser">
+        <div id="formTitle">
+          <h1>Login</h1>
+        </div>
+        <div class="form-group">
+          <label id="usernameLabel">Username</label>
+          <input type="text" v-model="username" placeholder="Enter your username" />
+          <span class="error" id="usernameErrSpan">{{ usernameError }}</span>
+        </div>
 
-    <div id="password">
-      <label id="passwordLabel">Password: </label>
-      <input type="password" v-model="password" />
-      <span id="passwordErrSpan">{{ passwordError }}</span>
+        <div class="form-group">
+          <label id="passwordLabel">Password</label>
+          <input type="password" v-model="password" placeholder="Enter your password" />
+          <span class="error" id="passwordErrSpan">{{ passwordError }}</span>
+        </div>
+        <button id="submit" type="submit" :disabled="isSubmitting || !meta.valid">Login</button>
+      </form>
     </div>
-    <button id="submit" type="submit" :disabled="isSubmitting || !meta.valid">Login</button>
-  </form>
-</div>
+  </div>
 </template>
+
 <style scoped>
-input {
-  width: 100%;
-  margin-bottom: 10px;
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-color: #f8f9fa;
 }
 
-span {
-  color: red;
-  font-size: 12px;
+#formContainer {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+#formTitle {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+h1 {
+  color: #2c3e50;
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+}
+
+.error {
+  display: block;
+  color: #e74c3c;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+#loginBtn {
+  margin-bottom: 2rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #4a90e2;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#loginBtn:hover {
+  background-color: #357abd;
+}
+
+#submit {
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #4a90e2;
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+#submit:hover:not(:disabled) {
+  background-color: #357abd;
+}
+
+#submit:disabled {
+  background-color: #cbd5e0;
+  cursor: not-allowed;
 }
 </style>
