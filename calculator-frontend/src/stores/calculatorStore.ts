@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import axios from 'axios'
+import { saveUserInfo } from './userInfo'
 
 export const useCalculatorStore = defineStore('calculator', () => {
   // State
@@ -11,6 +12,7 @@ export const useCalculatorStore = defineStore('calculator', () => {
   const text = ref('')
   const ansValue = ref<string | number>('')
   const history = ref<string[]>([])
+  const userInfo = saveUserInfo()
 
   // Actions
   const handleBtnClick = (value: string): void => {
@@ -64,14 +66,23 @@ export const useCalculatorStore = defineStore('calculator', () => {
         console.log('Error: Empty expression')
         return
       }
-      console.log('Sending expression to backend:', expression)
-      const response = await axios.post('http://localhost:8080/api/calculate', { expression })
+      const payload = {
+        username: userInfo.savedName,
+        password: userInfo.savedPassword,
+        expression: expression
+      }
+      console.log('Sending expression to backend:', payload)
+      const response = await axios.post('http://localhost:5170/api/calculate', payload)
       const data = response.data
       ansValue.value = data.result
       combineResults(expression, data.result)
     } catch (error) {
       console.error('Calculation error with backend:', error)
     }
+  }
+
+  function setHistory(historyData: Array<{ id: number, expression: string, result: number | string, timestamp: string }>) {
+    history.value = historyData.map(item => `${item.expression} = ${item.result}`);
   }
 
   const combineResults = (expression: string, result: string | number): void => {
@@ -97,5 +108,6 @@ export const useCalculatorStore = defineStore('calculator', () => {
     performCalculationAsync,
     combineResults,
     updateText,
+    setHistory,
   }
 })
