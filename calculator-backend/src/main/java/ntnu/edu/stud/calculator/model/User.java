@@ -2,6 +2,8 @@ package ntnu.edu.stud.calculator.model;
 import jakarta.persistence.*;
 import java.util.List;
 
+@Entity
+@Table(name = "app_users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

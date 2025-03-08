@@ -1,6 +1,5 @@
 package ntnu.edu.stud.calculator.controller;
 
-
 import ntnu.edu.stud.calculator.model.User;
 import ntnu.edu.stud.calculator.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +15,22 @@ public class AuthController {
 
     //Endpoint for registering a new user
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody User user) {
-        User newUser = userService.registerUser(user.getUsername(), user.getPassword());
-        return ResponseEntity.ok(newUser);
+    public ResponseEntity<?> register(@RequestBody User user) {
+        try {
+            User newUser = userService.registerUser(user.getUsername(), user.getPassword());
+            return ResponseEntity.ok(newUser);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("An unexpected error occurred");
+        }
     }
 
     //Endpoint for loggin in an user, without sessions / tokens (will be implemented in part 2)
     @PostMapping("/login")
     public ResponseEntity<User> login(@RequestBody User user){
-        return userService.login(user.getUsername(), user.getPassword()).map(ResponseEntity::ok).orElse(ResponseEntity.status(401).build());
+        return userService.login(user.getUsername(), user.getPassword())
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(401).build());
     }
 }
