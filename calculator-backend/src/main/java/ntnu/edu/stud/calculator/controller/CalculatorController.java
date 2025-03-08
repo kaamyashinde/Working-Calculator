@@ -20,6 +20,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:5173")
@@ -59,12 +63,36 @@ public class CalculatorController {
 
   //Endpoing for getting all calculations for an user
   @GetMapping("/history")
-  public ResponseEntity<Page<Calculation>> getHistory(@RequestParam String username, @RequestParam String password, @RequestParam(defaultValue="0") int page, @RequestParam(defaultValue = "10") int size){
-    User user = userService.login(username, password).orElse(null);
-    if (user == null) {
-      return ResponseEntity.status(401).build();
-    }
-    Page<Calculation> history = calculationService.getCalculationsForUser(user, page, size);
-    return ResponseEntity.ok(history);
+  public ResponseEntity<?> getHistory(
+      @RequestParam String username,
+      @RequestParam String password,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size
+  ) {
+      try {
+          // First authenticate the user
+          Optional<User> userOpt = userService.login(username, password);
+          if (userOpt.isEmpty()) {
+              return ResponseEntity.status(401).body("Invalid credentials");
+          }
+
+          User user = userOpt.get();
+          logger.info("Fetching calculation history for user: {}", username);
+          
+          // Get paginated calculations
+          Page<Calculation> history = calculationService.getCalculationsForUser(user, page, size);
+          
+          // Create a response map with metadata
+          Map<String, Object> response = new HashMap<>();
+          response.put("content", history.getContent());
+          response.put("currentPage", history.getNumber());
+          response.put("totalItems", history.getTotalElements());
+          response.put("totalPages", history.getTotalPages());
+          
+          return ResponseEntity.ok(response);
+      } catch (Exception e) {
+          logger.error("Error fetching history for user {}: {}", username, e.getMessage());
+          return ResponseEntity.internalServerError().body("Error fetching calculation history");
+      }
   }
 }
