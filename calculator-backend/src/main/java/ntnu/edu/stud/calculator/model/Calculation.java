@@ -1,7 +1,9 @@
 package ntnu.edu.stud.calculator.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "calculations")
 public class Calculation {
@@ -15,6 +17,7 @@ public class Calculation {
 
     private LocalDateTime timestamp;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
