@@ -1,7 +1,7 @@
 package ntnu.edu.stud.calculator.model;
 
 import jakarta.persistence.*;
-
+import java.time.LocalDateTime;
 @Entity
 @Table(name = "calculations")
 public class Calculation {
@@ -13,6 +13,8 @@ public class Calculation {
     private String expression;
     private double result;
 
+    private LocalDateTime timestamp;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -23,6 +25,7 @@ public class Calculation {
         this.expression = expression;
         this.result = result;
         this.user = user;
+        this.timestamp = LocalDateTime.now();
     }
 
     public Long getId(){
@@ -38,5 +41,9 @@ public class Calculation {
 
     public User getUser(){
         return user;
+    }
+
+    public LocalDateTime getTimestamp(){
+        return timestamp;
     }
 }
