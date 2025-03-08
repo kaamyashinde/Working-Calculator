@@ -44,10 +44,24 @@ function getInputValue() {
 <style scoped>
 input {
   width: 100%;
-  height: 25px;
-  background-color: rgba(127, 128, 131, 0.7);
-  color: white;
-  border-radius: 5px;
-  border: 1px solid black;
+  height: 50px;
+  background-color: #ffffff;
+  color: #2c3e50;
+  border-radius: 8px;
+  border: 2px solid #e2e8f0;
+  padding: 0 1rem;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+input:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+}
+
+input::placeholder {
+  color: #a0aec0;
 }
 </style>

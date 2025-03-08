@@ -74,21 +74,59 @@ function logOut(){
 .custom-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
+
 .calc-container {
   display: grid;
   grid-template-columns: 1fr;
+  gap: 1rem;
+  background: #f8f9fa;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .btns-container {
   display: grid;
   grid-template-columns: 3fr 1fr;
+  gap: 1rem;
 }
+
 .add-span {
   grid-column: span 2;
 }
 
 h1 {
   text-align: center;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+#goToReview, #logOut {
+  padding: 0.5rem 1rem;
+  margin: 0.5rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #4a90e2;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#goToReview:hover, #logOut:hover {
+  background-color: #357abd;
+}
+
+#logOut {
+  background-color: #e74c3c;
+}
+
+#logOut:hover {
+  background-color: #c0392b;
 }
 </style>
