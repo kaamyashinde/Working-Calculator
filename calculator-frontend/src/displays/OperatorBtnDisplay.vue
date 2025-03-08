@@ -1,13 +1,6 @@
 <script setup>
 import CalcBtn from '@/components/CalcBtn.vue'
 
-defineProps({
-  types: {
-    type: Array,
-    required: true,
-  },
-})
-
 const operators = ['+', '-', '*', '/']
 </script>
 
@@ -18,7 +11,7 @@ const operators = ['+', '-', '*', '/']
       v-for="oprt in operators"
       :key="oprt"
       :placeholder="oprt"
-      :btnType="types[1]"
+      :btnType="'operator'"
     />
   </div>
 </template>

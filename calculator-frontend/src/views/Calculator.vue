@@ -12,9 +12,6 @@ import { saveUserInfo } from '@/stores/userInfo'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-
-const types = ['number', 'operator']
-
 const store = useCalculatorStore()
 const userInfo = saveUserInfo()
 
@@ -23,7 +20,7 @@ const handleBtnClick = (value) => {
 }
 
 function goToReview() {
-  router.push({ name: 'review' }) // Navigate to the home route
+  router.push({ name: 'review' })
 }
 
 function logOut(){
@@ -53,10 +50,10 @@ function logOut(){
       <div class="btns-container">
         <div>
           <MiscBtnDisplay @miscBtnClick="handleBtnClick" />
-          <NumBtnDisplay @numBtnClick="handleBtnClick" types="types" />
+          <NumBtnDisplay @numBtnClick="handleBtnClick" />
         </div>
         <div>
-          <OperatorBtnDisplay types="types" @operatorBtnClick="handleBtnClick" />
+          <OperatorBtnDisplay @operatorBtnClick="handleBtnClick" />
         </div>
         <div class="add-span">
           <LastRowDisplay @lastRowClick="handleBtnClick" />

@@ -1,13 +1,6 @@
 <script setup>
 import CalcBtn from '@/components/CalcBtn.vue'
 
-defineProps({
-  types: {
-    type: Array,
-    required: true,
-  },
-})
-
 const numbers = Array.from({ length: 9 }, (_, i) => i + 1)
 </script>
 
@@ -18,7 +11,7 @@ const numbers = Array.from({ length: 9 }, (_, i) => i + 1)
       v-for="number in numbers"
       :key="number"
       :placeholder="number.toString()"
-      :btnType="types[0]"
+      :btnType="'number'"
     />
   </div>
 </template>
