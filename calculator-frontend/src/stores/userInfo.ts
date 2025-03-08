@@ -6,6 +6,7 @@ export const saveUserInfo = defineStore('userInfo', () => {
   const savedName = ref('')
   const savedEmail = ref('')
   const savedMessage = ref('')
+  const savedPassword = ref('')
   const statusMessage = ref('hi')
 
   async function handleSubmit(name: string, email: string, message: string) {
@@ -22,8 +23,16 @@ export const saveUserInfo = defineStore('userInfo', () => {
     }
   }
 
+  async function setUserInfo(username: string, email: string, password: string){
+    savedName.value = username
+    savedEmail.value = email
+    savedPassword.value = password
+  }
   return {
     handleSubmit,
     statusMessage,
+    setUserInfo,
+    savedName,
+    savedPassword,
   }
 })
