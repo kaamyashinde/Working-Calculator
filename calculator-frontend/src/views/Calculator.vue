@@ -8,7 +8,7 @@ import OperatorBtnDisplay from '@/displays/OperatorBtnDisplay.vue'
 import LastRowDisplay from '@/displays/LastRowDisplay.vue'
 import CalcLog from '@/components/CalcLog.vue'
 import { useCalculatorStore } from '@/stores/calculatorStore.js'
-
+import { saveUserInfo } from '@/stores/userInfo'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -16,6 +16,7 @@ const router = useRouter()
 const types = ['number', 'operator']
 
 const store = useCalculatorStore()
+const userInfo = saveUserInfo()
 
 const handleBtnClick = (value) => {
   store.handleBtnClick(value)
@@ -24,10 +25,18 @@ const handleBtnClick = (value) => {
 function goToReview() {
   router.push({ name: 'review' }) // Navigate to the home route
 }
+
+function logOut(){
+  userInfo.setUserInfo('', '', '')
+  router.push({ name: 'login' })
+}
 </script>
 
 <template>
-  <button id="goToReview" @click="goToReview">Leave us a review?</button>
+  <div>
+    <button id="goToReview" @click="goToReview">Leave us a review?</button>
+    <button id="logOut" @click="logOut">Log out</button>
+  </div>
   <div class="custom-container">
     <div class="calc-container">
       <div>
