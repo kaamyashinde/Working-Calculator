@@ -81,6 +81,9 @@ export const useCalculatorStore = defineStore('calculator', () => {
     }
   }
 
+  function setHistory(historyData: Array<{ id: number, expression: string, result: number | string, timestamp: string }>) {
+    history.value = historyData.map(item => `${item.expression} = ${item.result}`);
+  }
 
   const combineResults = (expression: string, result: string | number): void => {
     const resultString = `${expression} = ${result}`
@@ -105,5 +108,6 @@ export const useCalculatorStore = defineStore('calculator', () => {
     performCalculationAsync,
     combineResults,
     updateText,
+    setHistory,
   }
 })

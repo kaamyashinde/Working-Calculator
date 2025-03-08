@@ -3,11 +3,13 @@ import {useField, useForm} from 'vee-validate'
 import * as yup from 'yup'
 import {useRouter} from 'vue-router'
 import {saveUserInfo} from '@/stores/userInfo'
+import {useCalculatorStore} from '@/stores/calculatorStore'
 import axios from 'axios'
 export default {
   setup(props, ctx) {
     const router = useRouter()
     const store = saveUserInfo()
+    const calcStore = useCalculatorStore()
 
     //Define the validation schema
     const schema = yup.object({
@@ -31,11 +33,25 @@ export default {
         console.log("Login successful")
         store.setUserInfo(response.data.username, response.data.email, response.data.password)
         router.push('/')
+        updateHistory(response.data.username, response.data.password)
       })
       .catch((error) => {
         console.error('Login failed:', error)
       })
     })
+
+    async function updateHistory(username: string, password: string){
+      console.log("Retreieving history from the server...")
+      await axios.get('http://localhost:5170/api/history?username=' + username + '&password=' + password + "&page=0&size=10" )
+      .then((response) => {
+        console.log("History retrieved successfully")
+        console.log(response.data.content)
+        calcStore.setHistory(response.data.content)
+      })
+      .catch((error) => {
+        console.error('History retrieval failed:', error)
+      })
+    }
 
     function switchToRegister(){
       router.push('/register')

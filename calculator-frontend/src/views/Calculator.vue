@@ -29,6 +29,7 @@ function goToReview() {
 function logOut(){
   userInfo.setUserInfo('', '', '')
   router.push({ name: 'login' })
+  store.setHistory([])
 }
 </script>
 
