@@ -2,6 +2,7 @@ package ntnu.edu.stud.calculator.controller;
 
 import ntnu.edu.stud.calculator.model.User;
 import ntnu.edu.stud.calculator.service.UserService;
+import ntnu.edu.stud.calculator.utils.JwUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private JwUtil jwUtil;
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
@@ -37,10 +41,32 @@ public class AuthController {
     }
 
     //Endpoint for loggin in an user, without sessions / tokens (will be implemented in part 2)
+    // Endpoint to login and generate a JWT token
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody User user){
-        return userService.login(user.getUsername(), user.getPassword())
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(401).build());
+    public ResponseEntity<?> login(@RequestBody User loginRequest) {
+        return userService.login(loginRequest.getUsername(), loginRequest.getPassword())
+                .map(user -> {
+                    String token = jwUtil.generateToken(user.getUsername());
+                    return ResponseEntity.ok(new AuthResponse(token));
+                })
+                .orElse(ResponseEntity.status(401).body(new AuthResponse(null)));
+    }
+}
+
+class AuthResponse {
+    private String token;
+    private String error;
+
+    public AuthResponse(String token) {
+        this.token = token;
+        this.error = token == null ? "Invalid credentials" : null;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public String getError() {
+        return error;
     }
 }
