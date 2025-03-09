@@ -63,6 +63,7 @@ function logOut(){
     </div>
     <div>
       <h1>Calculation Log</h1>
+      <button id="clearLog" @click="store.clearHistory()">Clear Log</button>
       <CalcLog :resultArray="store.history" />
     </div>
   </div>
@@ -125,6 +126,22 @@ h1 {
 }
 
 #logOut:hover {
+  background-color: #c0392b;
+}
+
+#clearLog {
+  padding: 0.5rem 1rem;
+  margin: 0.5rem auto;
+  display: block;
+  border: none;
+  border-radius: 4px;
+  background-color: #e74c3c;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#clearLog:hover {
   background-color: #c0392b;
 }
 
