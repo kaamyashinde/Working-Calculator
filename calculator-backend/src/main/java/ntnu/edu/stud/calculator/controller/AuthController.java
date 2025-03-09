@@ -2,7 +2,7 @@ package ntnu.edu.stud.calculator.controller;
 
 import ntnu.edu.stud.calculator.model.User;
 import ntnu.edu.stud.calculator.service.UserService;
-import ntnu.edu.stud.calculator.utils.JwUtil;
+import ntnu.edu.stud.calculator.utils.JwtUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,7 @@ public class AuthController {
     private UserService userService;
 
     @Autowired
-    private JwUtil jwUtil;
+    private JwtUtil jwUtil;
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 

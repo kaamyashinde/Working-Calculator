@@ -7,7 +7,7 @@ import java.security.Key;
 import java.util.Date;
 
 @Component
-public class JwUtil {
+public class JwtUtil {
 
     //Generate a random key
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
