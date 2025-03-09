@@ -1,8 +1,8 @@
 package ntnu.edu.stud.calculator.controller;
 
 import ntnu.edu.stud.calculator.model.User;
+import ntnu.edu.stud.calculator.security.JwtUtil;
 import ntnu.edu.stud.calculator.service.UserService;
-import ntnu.edu.stud.calculator.utils.JwtUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

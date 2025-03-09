@@ -1,4 +1,4 @@
-package ntnu.edu.stud.calculator.utils;
+package ntnu.edu.stud.calculator.security;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
