@@ -28,29 +28,27 @@ export default {
     //Form submit handler
     const loginUser = handleSubmit(async (values) => {
       console.log("sending data to server...")
-      await axios.post('http://localhost:5170/auth/login', values)
-      .then((response) => {
+      try {
+        const response = await axios.post('http://localhost:5170/auth/login', values)
         console.log("Login successful")
         store.setUserInfo(response.data.username, response.data.email, response.data.password)
+        await updateHistory(response.data.username, response.data.password)
         router.push('/')
-        updateHistory(response.data.username, response.data.password)
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error('Login failed:', error)
-      })
+      }
     })
 
     async function updateHistory(username: string, password: string){
       console.log("Retreieving history from the server...")
-      await axios.get('http://localhost:5170/api/history?username=' + username + '&password=' + password + "&page=0&size=10" )
-      .then((response) => {
+      try {
+        const response = await axios.get('http://localhost:5170/api/history?username=' + username + '&password=' + password + "&page=0&size=10")
         console.log("History retrieved successfully")
         console.log(response.data.content)
         calcStore.setHistory(response.data.content)
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error('History retrieval failed:', error)
-      })
+      }
     }
 
     function switchToRegister(){
