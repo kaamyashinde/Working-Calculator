@@ -35,6 +35,7 @@ function logOut(){
     <button id="goToReview" @click="goToReview">Leave us a review?</button>
     <button id="logOut" @click="logOut">Log out</button>
   </div>
+  <h1 class="welcome-message">Welcome, {{ userInfo.savedName }}!</h1>
   <div class="custom-container">
     <div class="calc-container">
       <div>
@@ -125,5 +126,13 @@ h1 {
 
 #logOut:hover {
   background-color: #c0392b;
+}
+
+.welcome-message {
+  text-align: center;
+  color: #2c3e50;
+  margin: 1rem 0;
+  font-size: 2rem;
+  font-weight: 600;
 }
 </style>
