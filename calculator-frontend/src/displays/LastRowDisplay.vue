@@ -6,6 +6,8 @@ const dot = ref('.')
 const zero = ref('0')
 const equal = ref('=')
 const free = ref(' ')
+
+const yellowClass = 'yellow'
 </script>
 
 <template>
@@ -13,7 +15,7 @@ const free = ref(' ')
     <CalcBtn :btnType="free" :placeholder="free" />
     <CalcBtn :btnType="zero" :placeholder="zero" />
     <CalcBtn :btnType="dot" :placeholder="dot" />
-    <CalcBtn :btnType="equal" :placeholder="equal" :btnClass="yellow" />
+    <CalcBtn :btnType="equal" :placeholder="equal" :btnClass="yellowClass" />
   </div>
 </template>
 
@@ -25,8 +27,5 @@ const free = ref(' ')
 
 .last-row-container {
   text-align: center;
-}
-.yellow {
-  color: #eab417;
 }
 </style>

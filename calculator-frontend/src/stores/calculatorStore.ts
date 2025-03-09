@@ -85,6 +85,10 @@ export const useCalculatorStore = defineStore('calculator', () => {
     history.value = historyData.map(item => `${item.expression} = ${item.result}`);
   }
 
+  const clearHistory = () => {
+    history.value = []
+  }
+
   const combineResults = (expression: string, result: string | number): void => {
     const resultString = `${expression} = ${result}`
     history.value.unshift(resultString)
@@ -109,5 +113,6 @@ export const useCalculatorStore = defineStore('calculator', () => {
     combineResults,
     updateText,
     setHistory,
+    clearHistory,
   }
 })
