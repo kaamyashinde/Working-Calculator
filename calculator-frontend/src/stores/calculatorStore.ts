@@ -47,10 +47,24 @@ export const useCalculatorStore = defineStore('calculator', () => {
         console.log('Error: Invalid expression format:', sanitizedExpression)
         return
       }
-      if (/\/0(?!\d)/.test(sanitizedExpression)) {
-        combineResults(expression, 'undefined')
+
+      // Check for division by zero
+      const match = sanitizedExpression.match(/(.*?)\/(0(?!\d))/)
+      if (match) {
+        const numerator = match[1]
+        if (numerator.trim()) {
+          try {
+            const value = eval(numerator)
+            combineResults(expression, value >= 0 ? 'Infinity' : '-Infinity')
+          } catch (e) {
+            combineResults(expression, 'Infinity')
+          }
+        } else {
+          combineResults(expression, 'Infinity')
+        }
         return
       }
+
       console.log('Evaluating:', sanitizedExpression)
       ansValue.value = new Function(`'use strict'; return (${sanitizedExpression})`)()
       combineResults(expression, ansValue.value)
@@ -67,9 +81,7 @@ export const useCalculatorStore = defineStore('calculator', () => {
         return
       }
       const payload = {
-        username: userInfo.savedName,
-        password: userInfo.savedPassword,
-        expression: expression,
+        expression: expression
       }
       console.log('Sending expression to backend:', payload)
       const response = await axios.post('http://localhost:5170/api/calculate', payload, {
@@ -77,11 +89,32 @@ export const useCalculatorStore = defineStore('calculator', () => {
           'Authorization': `Bearer ${userInfo.savedToken}`
         }
       })
-      const data = response.data
-      ansValue.value = data.result
-      combineResults(expression, data.result)
-    } catch (error) {
+      const calculation = response.data
+      ansValue.value = calculation.result
+      combineResults(calculation.expression, calculation.result)
+
+      // Refresh history after calculation
+      try {
+        const historyResponse = await axios.get(
+          'http://localhost:5170/api/history',
+          {
+            headers: {
+              'Authorization': `Bearer ${userInfo.savedToken}`
+            }
+          }
+        )
+        if (historyResponse.data.content) {
+          setHistory(historyResponse.data.content)
+        }
+      } catch (historyError) {
+        console.error('Error refreshing history:', historyError)
+      }
+    } catch (error: any) {
       console.error('Calculation error with backend:', error)
+      if (error.response?.status === 401) {
+        alert('Session expired. Please login again.')
+        window.location.href = '/login'
+      }
     }
   }
 

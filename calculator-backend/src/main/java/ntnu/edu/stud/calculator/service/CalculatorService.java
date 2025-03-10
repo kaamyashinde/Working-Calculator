@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class CalculatorService {
@@ -26,9 +28,20 @@ public class CalculatorService {
         return "Error: Invalid expression format: " + sanitizedExpression;
       }
 
-      if (sanitizedExpression.matches(".*\\/0(?!\\d).*")) {
-        logger.error("Error: Division by zero for expression: {}", sanitizedExpression);
-        return "undefined";
+      // Check for division by zero
+      Pattern pattern = Pattern.compile("(.*?)/(0(?!\\.))");
+      Matcher matcher = pattern.matcher(sanitizedExpression);
+      if (matcher.find()) {
+        String numerator = matcher.group(1);
+        if (!numerator.trim().isEmpty()) {
+          // If there's a valid numerator, return Infinity or -Infinity based on its sign
+          ScriptEngineManager manager = new ScriptEngineManager();
+          ScriptEngine engine = manager.getEngineByName("JavaScript");
+          Object numValue = engine.eval(numerator);
+          double value = Double.parseDouble(String.valueOf(numValue));
+          return value >= 0 ? "Infinity" : "-Infinity";
+        }
+        return "Infinity";
       }
 
       logger.info("Evaluating: {}", sanitizedExpression);
