@@ -1,7 +1,6 @@
 package ntnu.edu.stud.calculator.controller;
 
 import ntnu.edu.stud.calculator.model.Calculation;
-import ntnu.edu.stud.calculator.model.CalculationRequest;
 import ntnu.edu.stud.calculator.model.User;
 import ntnu.edu.stud.calculator.service.CalculationService;
 import ntnu.edu.stud.calculator.service.CalculatorService;
@@ -23,7 +22,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -31,6 +29,7 @@ import java.util.Optional;
 public class CalculatorController {
   @Autowired
   private CalculatorService calculatorService;
+  @SuppressWarnings("unused")
   @Autowired
   private UserService userService;
   @Autowired
