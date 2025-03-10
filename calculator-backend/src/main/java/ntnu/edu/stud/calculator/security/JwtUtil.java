@@ -13,7 +13,7 @@ public class JwtUtil {
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     
     //set the expiration to five minutes
-    private final long jwtExpirationInMs = 5 * 60 * 1000;
+    private final long jwtExpirationInMs = 1 * 60 * 1000;
 
     //Generate token with subject (username)
     public String generateToken(String username){

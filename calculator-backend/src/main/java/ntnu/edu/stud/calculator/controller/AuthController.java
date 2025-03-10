@@ -52,6 +52,20 @@ public class AuthController {
                 })
                 .orElse(ResponseEntity.status(401).body(new LoginResponse(null, null)));
     }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refreshToken(@RequestHeader("Authorization") String bearerToken) {
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            String token = bearerToken.substring(7);
+            String username = jwUtil.validateTokenAndGetUsername(token);
+            
+            if (username != null) {
+                String newToken = jwUtil.generateToken(username);
+                return ResponseEntity.ok(new LoginResponse(newToken, null));
+            }
+        }
+        return ResponseEntity.status(401).body(new LoginResponse(null, null));
+    }
 }
 
 class LoginResponse {

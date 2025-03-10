@@ -2,16 +2,57 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { saveUserInfo } from '@/stores/userInfo'
 import { useRouter } from 'vue-router'
+import axios from 'axios'
 
-const timeRemaining = ref('')
+const notification = ref('')
 const router = useRouter()
 const userInfo = saveUserInfo()
 let timerInterval: number | undefined
 
-function updateTimer() {
+async function refreshToken() {
+  try {
+    const response = await axios.post(
+      'http://localhost:5170/auth/refresh',
+      {},
+      {
+        headers: {
+          'Authorization': `Bearer ${userInfo.savedToken}`
+        }
+      }
+    )
+
+    if (response.data.token) {
+      userInfo.setUserInfo(
+        userInfo.savedName,
+        userInfo.savedEmail,
+        userInfo.savedPassword,
+        response.data.token
+      )
+      notification.value = 'Session refreshed'
+      setTimeout(() => {
+        notification.value = ''
+      }, 3000)
+      return true
+    }
+  } catch (error) {
+    console.error('Failed to refresh token:', error)
+    notification.value = 'Session expired'
+    setTimeout(() => {
+      userInfo.clearUserInfo()
+      router.push('/login')
+    }, 3000)
+  }
+  return false
+}
+
+function checkToken() {
   const token = userInfo.savedToken
   if (!token) {
-    timeRemaining.value = 'Session expired'
+    notification.value = 'Session expired'
+    setTimeout(() => {
+      userInfo.clearUserInfo()
+      router.push('/login')
+    }, 3000)
     return
   }
 
@@ -21,22 +62,23 @@ function updateTimer() {
   const now = Date.now()
   const remainingTime = expirationTime - now
 
-  if (remainingTime <= 0) {
-    timeRemaining.value = 'Session expired'
-    userInfo.clearUserInfo()
-    router.push('/login')
-    return
+  // If less than 30 seconds remaining, try to refresh the token
+  if (remainingTime <= 30000 && remainingTime > 0) {
+    refreshToken()
   }
 
-  // Convert remaining time to minutes and seconds
-  const minutes = Math.floor(remainingTime / 60000)
-  const seconds = Math.floor((remainingTime % 60000) / 1000)
-  timeRemaining.value = `${minutes}:${seconds.toString().padStart(2, '0')}`
+  if (remainingTime <= 0) {
+    notification.value = 'Session expired'
+    setTimeout(() => {
+      userInfo.clearUserInfo()
+      router.push('/login')
+    }, 3000)
+  }
 }
 
 onMounted(() => {
-  updateTimer()
-  timerInterval = setInterval(updateTimer, 1000) as unknown as number
+  checkToken()
+  timerInterval = setInterval(checkToken, 1000) as unknown as number
 })
 
 onUnmounted(() => {
@@ -47,13 +89,13 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="session-timer">
-    Session time remaining: {{ timeRemaining }}
+  <div v-if="notification" class="notification">
+    {{ notification }}
   </div>
 </template>
 
 <style scoped>
-.session-timer {
+.notification {
   position: fixed;
   top: 1rem;
   right: 1rem;
@@ -63,5 +105,17 @@ onUnmounted(() => {
   border-radius: 4px;
   font-size: 0.9rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 </style>
