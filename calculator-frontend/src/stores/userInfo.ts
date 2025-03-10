@@ -3,11 +3,12 @@ import { ref } from 'vue'
 import axios from 'axios'
 
 export const saveUserInfo = defineStore('userInfo', () => {
-  const savedName = ref('')
-  const savedEmail = ref('')
+  // Initialize state from localStorage if available
+  const savedName = ref(localStorage.getItem('user_name') || '')
+  const savedEmail = ref(localStorage.getItem('user_email') || '')
   const savedMessage = ref('')
   const savedPassword = ref('')
-  const savedToken = ref('')
+  const savedToken = ref(localStorage.getItem('user_token') || '')
   const statusMessage = ref('hi')
 
   async function handleSubmit(name: string, email: string, message: string) {
@@ -29,6 +30,11 @@ export const saveUserInfo = defineStore('userInfo', () => {
     savedEmail.value = email
     savedPassword.value = password
     savedToken.value = token
+
+    // Save to localStorage
+    localStorage.setItem('user_name', username)
+    localStorage.setItem('user_email', email)
+    localStorage.setItem('user_token', token)
   }
 
   function clearUserInfo() {
@@ -36,6 +42,11 @@ export const saveUserInfo = defineStore('userInfo', () => {
     savedEmail.value = ''
     savedPassword.value = ''
     savedToken.value = ''
+
+    // Clear localStorage
+    localStorage.removeItem('user_name')
+    localStorage.removeItem('user_email')
+    localStorage.removeItem('user_token')
   }
 
   return {
