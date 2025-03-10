@@ -100,11 +100,11 @@ export default {
 
 #formContainer {
   background: white;
-  padding: 2rem;
+  padding: 2rem 3rem;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 500px;
+  max-width: 600px;
 }
 
 #formTitle {
@@ -121,6 +121,7 @@ h1 {
 
 .form-group {
   margin-bottom: 1.5rem;
+  width: 100%;
 }
 
 label {
@@ -138,6 +139,7 @@ textarea {
   border-radius: 8px;
   font-size: 1rem;
   transition: all 0.3s ease;
+  box-sizing: border-box;
   font-family: inherit;
 }
 

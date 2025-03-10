@@ -125,11 +125,11 @@ export default {
 
 #formContainer {
   background: white;
-  padding: 2rem;
+  padding: 2rem 3rem;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 400px;
+  max-width: 500px;
 }
 
 #formTitle {
@@ -146,6 +146,7 @@ h1 {
 
 .form-group {
   margin-bottom: 1.5rem;
+  width: 100%;
 }
 
 label {
@@ -162,6 +163,7 @@ input {
   border-radius: 8px;
   font-size: 1rem;
   transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
 input:focus {
