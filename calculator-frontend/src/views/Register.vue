@@ -25,16 +25,20 @@ export default {
 
     //Form submit handler
     const registerUser = handleSubmit(async (values) => {
-      console.log("sending data to server...")
-      await axios.post('http://localhost:5170/auth/register', values)
-      .then((response) => {
-        console.log("Registration successful")
-        store.setUserInfo(response.data.username, response.data.email, response.data.password)
+      console.log('sending data to server...')
+      try {
+        const response = await axios.post('http://localhost:5170/auth/register', values)
+        console.log('Registration successful')
+        store.setUserInfo(
+          response.data.user.username,
+          response.data.user.email,
+          response.data.user.password,
+          response.data.token
+        )
         router.push('/')
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error('Registration failed:', error)
-      })
+      }
     })
 
     function switchToLogin(){

@@ -41,4 +41,9 @@ public class UserService {
         return userRepository.findByUsername(username).filter(user -> user.getPassword().equals(password));
     }
 
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+    
+
 }

@@ -10,6 +10,7 @@ import CalcLog from '@/components/CalcLog.vue'
 import { useCalculatorStore } from '@/stores/calculatorStore.js'
 import { saveUserInfo } from '@/stores/userInfo'
 import { useRouter } from 'vue-router'
+import SessionTimer from '@/components/SessionTimer.vue'
 
 const router = useRouter()
 const store = useCalculatorStore()
@@ -23,14 +24,15 @@ function goToReview() {
   router.push({ name: 'review' })
 }
 
-function logOut(){
-  userInfo.setUserInfo('', '', '')
+function logOut() {
+  userInfo.clearUserInfo()
   router.push({ name: 'login' })
   store.setHistory([])
 }
 </script>
 
 <template>
+  <SessionTimer />
   <div>
     <button id="goToReview" @click="goToReview">Leave us a review?</button>
     <button id="logOut" @click="logOut">Log out</button>
