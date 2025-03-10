@@ -31,8 +31,10 @@ export default {
       try {
         const response = await axios.post('http://localhost:5170/auth/login', values)
         console.log("Login successful")
-        store.setUserInfo(response.data.username, response.data.email, response.data.password)
-        await updateHistory(response.data.username, response.data.password)
+        console.log(response.data)
+        console.log(response.data.user)
+        store.setUserInfo(response.data.user.username, response.data.user.email, response.data.user.password)
+        await updateHistory(response.data.user.username, response.data.user.password)
         router.push('/')
       } catch (error) {
         console.error('Login failed:', error)
