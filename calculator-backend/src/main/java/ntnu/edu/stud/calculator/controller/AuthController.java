@@ -30,7 +30,9 @@ public class AuthController {
         try {
             logger.info("Registering new user: {}", user.getUsername());
             User newUser = userService.registerUser(user.getUsername(), user.getPassword());
-            return ResponseEntity.ok(newUser);
+            String token = jwUtil.generateToken(newUser.getUsername());
+            LoginResponse response = new LoginResponse(token, newUser);
+            return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             logger.error("Registration failed: {}", e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
