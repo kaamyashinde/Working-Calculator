@@ -23,8 +23,8 @@ function goToReview() {
   router.push({ name: 'review' })
 }
 
-function logOut(){
-  userInfo.setUserInfo('', '', '')
+function logOut() {
+  userInfo.clearUserInfo()
   router.push({ name: 'login' })
   store.setHistory([])
 }

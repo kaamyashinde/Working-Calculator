@@ -69,10 +69,14 @@ export const useCalculatorStore = defineStore('calculator', () => {
       const payload = {
         username: userInfo.savedName,
         password: userInfo.savedPassword,
-        expression: expression
+        expression: expression,
       }
       console.log('Sending expression to backend:', payload)
-      const response = await axios.post('http://localhost:5170/api/calculate', payload)
+      const response = await axios.post('http://localhost:5170/api/calculate', payload, {
+        headers: {
+          'Authorization': `Bearer ${userInfo.savedToken}`
+        }
+      })
       const data = response.data
       ansValue.value = data.result
       combineResults(expression, data.result)

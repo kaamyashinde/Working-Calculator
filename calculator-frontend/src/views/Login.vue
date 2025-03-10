@@ -37,6 +37,7 @@ export default {
           response.data.user.username,
           response.data.user.email,
           response.data.user.password,
+          response.data.token
         )
         await updateHistory(response.data.user.username, response.data.user.password, response.data.token)
         router.push('/')
