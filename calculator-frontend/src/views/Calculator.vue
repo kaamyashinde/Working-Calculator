@@ -1,6 +1,6 @@
 <script setup>
 import CalcBtn from '@/components/CalcBtn.vue'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import Input from '@/components/Input.vue'
 import NumBtnDisplay from '@/displays/NumBtnDisplay.vue'
 import MiscBtnDisplay from '@/displays/MiscBtnDisplay.vue'
@@ -29,6 +29,31 @@ function logOut() {
   router.push({ name: 'login' })
   store.setHistory([])
 }
+
+onMounted(async () => {
+  try {
+    const response = await fetch(
+      'http://localhost:5170/api/history',
+      {
+        headers: {
+          'Authorization': `Bearer ${userInfo.savedToken}`
+        }
+      }
+    )
+    if (response.ok) {
+      const data = await response.json()
+      store.setHistory(data.content)
+    } else {
+      console.error('Failed to fetch history:', response.statusText)
+      if (response.status === 401) {
+        userInfo.clearUserInfo()
+        router.push('/login')
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching history:', error)
+  }
+})
 </script>
 
 <template>

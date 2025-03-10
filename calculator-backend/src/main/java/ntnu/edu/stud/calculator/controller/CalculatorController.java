@@ -19,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,18 +39,24 @@ public class CalculatorController {
 
 
   @PostMapping("/calculate")
-  public ResponseEntity<Calculation> calculate(@RequestBody CalculationRequest request){
-    //1. authenticate the user
-    User user = userService.login(request.getUsername(), request.getPassword()).orElse(null);
-    if (user == null) {
-      logger.error("Invalid credentials for user: {}", request.getUsername());
-      return ResponseEntity.status(401).build();
+  public ResponseEntity<Calculation> calculate(@RequestBody Map<String, String> request) {
+    try {
+      // Get the authenticated user from the security context
+      User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+      if (user == null) {
+        logger.error("Unauthorized request");
+        return ResponseEntity.status(401).build();
+      }
+
+      String expression = request.get("expression");
+      logger.info("{} requested calculation: {}", user.getUsername(), expression);
+      String result = calculatorService.performCalculation(expression);
+      Calculation cal = calculationService.saveCalculation(expression, Double.parseDouble(result), user);
+      return ResponseEntity.ok(cal);
+    } catch (Exception e) {
+      logger.error("Calculation error: {}", e.getMessage());
+      return ResponseEntity.internalServerError().build();
     }
-    String expression = request.getExpression();
-    logger.info("{} requested calculation: {}", user.getUsername(), expression);
-    String result = calculatorService.performCalculation(expression);
-    Calculation cal = calculationService.saveCalculation(expression, Double.parseDouble(result), user);
-    return ResponseEntity.ok(cal);
   }
 
   /*
@@ -64,20 +71,17 @@ public class CalculatorController {
   //Endpoing for getting all calculations for an user
   @GetMapping("/history")
   public ResponseEntity<?> getHistory(
-      @RequestParam String username,
-      @RequestParam String password,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size
   ) {
       try {
-          // First authenticate the user
-          Optional<User> userOpt = userService.login(username, password);
-          if (userOpt.isEmpty()) {
-              return ResponseEntity.status(401).body("Invalid credentials");
+          // Get the authenticated user from the security context
+          User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+          if (user == null) {
+              return ResponseEntity.status(401).body("Unauthorized");
           }
 
-          User user = userOpt.get();
-          logger.info("Fetching calculation history for user: {}", username);
+          logger.info("Fetching calculation history for user: {}", user.getUsername());
           
           // Get paginated calculations
           Page<Calculation> history = calculationService.getCalculationsForUser(user, page, size);
@@ -91,7 +95,7 @@ public class CalculatorController {
           
           return ResponseEntity.ok(response);
       } catch (Exception e) {
-          logger.error("Error fetching history for user {}: {}", username, e.getMessage());
+          logger.error("Error fetching history: {}", e.getMessage());
           return ResponseEntity.internalServerError().body("Error fetching calculation history");
       }
   }
