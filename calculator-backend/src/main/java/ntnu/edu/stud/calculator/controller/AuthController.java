@@ -47,23 +47,30 @@ public class AuthController {
         return userService.login(loginRequest.getUsername(), loginRequest.getPassword())
                 .map(user -> {
                     String token = jwUtil.generateToken(user.getUsername());
-                    return ResponseEntity.ok(new AuthResponse(token));
+                    LoginResponse response = new LoginResponse(token, user);
+                    return ResponseEntity.ok(response);
                 })
-                .orElse(ResponseEntity.status(401).body(new AuthResponse(null)));
+                .orElse(ResponseEntity.status(401).body(new LoginResponse(null, null)));
     }
 }
 
-class AuthResponse {
+class LoginResponse {
     private String token;
+    private User user;
     private String error;
 
-    public AuthResponse(String token) {
+    public LoginResponse(String token, User user) {
         this.token = token;
+        this.user = user;
         this.error = token == null ? "Invalid credentials" : null;
     }
 
     public String getToken() {
         return token;
+    }
+
+    public User getUser() {
+        return user;
     }
 
     public String getError() {
