@@ -16,7 +16,7 @@ export const saveUserInfo = defineStore('userInfo', () => {
     savedMessage.value = message
     console.log(savedEmail.value, savedMessage.value, savedName.value)
 
-    const response = await axios.get('http://localhost:5170/status')
+    const response = await axios.get('http://localhost:3000/status')
     if (response.data == true) {
       statusMessage.value = 'Success: Your review has been submitted!'
     } else {
