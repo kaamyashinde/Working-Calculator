@@ -1,9 +1,9 @@
 <script lang="ts">
-import {useField, useForm} from 'vee-validate'
+import { useField, useForm } from 'vee-validate'
 import * as yup from 'yup'
-import {useRouter} from 'vue-router'
-import {saveUserInfo} from '@/stores/userInfo'
-import {useCalculatorStore} from '@/stores/calculatorStore'
+import { useRouter } from 'vue-router'
+import { saveUserInfo } from '@/stores/userInfo'
+import { useCalculatorStore } from '@/stores/calculatorStore'
 import axios from 'axios'
 export default {
   setup(props, ctx) {
@@ -14,38 +14,53 @@ export default {
     //Define the validation schema
     const schema = yup.object({
       username: yup.string().required('Username is required'),
-      password: yup.string().required('Password is required')
+      password: yup.string().required('Password is required'),
     })
 
     //Initialise the form and fields
-    const {handleSubmit, errors, isSubmitting, meta} = useForm({
+    const { handleSubmit, errors, isSubmitting, meta } = useForm({
       validationSchema: schema,
     })
 
-    const {value: username, errorMessage: usernameError} = useField('username')
-    const {value: password, errorMessage: passwordError} = useField('password')
+    const { value: username, errorMessage: usernameError } = useField('username')
+    const { value: password, errorMessage: passwordError } = useField('password')
 
     //Form submit handler
     const loginUser = handleSubmit(async (values) => {
-      console.log("sending data to server...")
+      console.log('sending data to server...')
       try {
         const response = await axios.post('http://localhost:5170/auth/login', values)
-        console.log("Login successful")
+        console.log('Login successful')
         console.log(response.data)
         console.log(response.data.user)
-        store.setUserInfo(response.data.user.username, response.data.user.email, response.data.user.password)
-        await updateHistory(response.data.user.username, response.data.user.password)
+        store.setUserInfo(
+          response.data.user.username,
+          response.data.user.email,
+          response.data.user.password,
+        )
+        await updateHistory(response.data.user.username, response.data.user.password, response.data.token)
         router.push('/')
       } catch (error) {
         console.error('Login failed:', error)
       }
     })
 
-    async function updateHistory(username: string, password: string){
-      console.log("Retreieving history from the server...")
+    async function updateHistory(username: string, password: string, token: string) {
+      console.log('Retrieving history from the server...')
       try {
-        const response = await axios.get('http://localhost:5170/api/history?username=' + username + '&password=' + password + "&page=0&size=10")
-        console.log("History retrieved successfully")
+        const response = await axios.get(
+          'http://localhost:5170/api/history?username=' +
+            username +
+            '&password=' +
+            password +
+            '&page=0&size=10',
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          }
+        )
+        console.log('History retrieved successfully')
         console.log(response.data.content)
         calcStore.setHistory(response.data.content)
       } catch (error) {
@@ -53,7 +68,7 @@ export default {
       }
     }
 
-    function switchToRegister(){
+    function switchToRegister() {
       router.push('/register')
     }
 
@@ -69,7 +84,6 @@ export default {
     }
   },
 }
-
 </script>
 
 <template>
