@@ -31,7 +31,7 @@ export default {
         console.log('Registration successful')
         store.setUserInfo(
           response.data.user.username,
-          response.data.user.email,
+          '',  // empty email
           response.data.user.password,
           response.data.token
         )
@@ -72,12 +72,6 @@ export default {
           <label id="usernameLabel">Username</label>
           <input type="text" v-model="username" placeholder="Choose a username" />
           <span class="error" id="usernameErrSpan">{{ usernameError }}</span>
-        </div>
-
-        <div class="form-group">
-          <label id="emailLabel">Email</label>
-          <input type="email" v-model="email" placeholder="Enter your email" />
-          <span class="error" id="emailErrSpan">{{ emailError }}</span>
         </div>
 
         <div class="form-group">

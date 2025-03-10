@@ -35,7 +35,7 @@ export default {
         console.log(response.data.user)
         store.setUserInfo(
           response.data.user.username,
-          response.data.user.email,
+          '',  // empty email
           response.data.user.password,
           response.data.token
         )
