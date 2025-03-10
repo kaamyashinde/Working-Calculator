@@ -1,16 +1,31 @@
 <script setup>
-defineProps({
+const props = defineProps({
   resultArray: {
     type: Array,
     required: true,
   },
 })
+
+const emit = defineEmits(['historyItemClick'])
+
+const handleHistoryItemClick = (result) => {
+  // Extract the expression part (before the '=')
+  const expression = result.split('=')[0].trim()
+  emit('historyItemClick', expression)
+}
 </script>
 
 <template>
   <div class="calc-log">
     <ul>
-      <li v-for="(result, index) in resultArray" :key="index">{{ result }}</li>
+      <li
+        v-for="(result, index) in resultArray"
+        :key="index"
+        @click="handleHistoryItemClick(result)"
+        class="history-item"
+      >
+        {{ result }}
+      </li>
     </ul>
   </div>
 </template>
@@ -40,5 +55,14 @@ li {
 
 li:last-child {
   border-bottom: none;
+}
+
+.history-item {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.history-item:hover {
+  background-color: #f8f9fa;
 }
 </style>

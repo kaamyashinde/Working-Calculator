@@ -20,6 +20,10 @@ const handleBtnClick = (value) => {
   store.handleBtnClick(value)
 }
 
+const handleHistoryItemClick = (expression) => {
+  store.text = expression
+}
+
 function goToReview() {
   router.push({ name: 'review' })
 }
@@ -91,7 +95,7 @@ onMounted(async () => {
     <div>
       <h1>Calculation Log</h1>
       <button id="clearLog" @click="store.clearHistory()">Clear Log</button>
-      <CalcLog :resultArray="store.history" />
+      <CalcLog :resultArray="store.history" @history-item-click="handleHistoryItemClick" />
     </div>
   </div>
 </template>
