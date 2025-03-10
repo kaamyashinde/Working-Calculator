@@ -4,10 +4,13 @@ import * as yup from 'yup'
 import {useRouter} from 'vue-router'
 import {saveUserInfo} from '@/stores/userInfo'
 import axios from 'axios'
+import { ref } from 'vue'
+
 export default {
   setup(props, ctx) {
     const router = useRouter()
     const store = saveUserInfo()
+    const registrationError = ref('')
 
     //Define the validation schema
     const schema = yup.object({
@@ -26,6 +29,7 @@ export default {
     //Form submit handler
     const registerUser = handleSubmit(async (values) => {
       console.log('sending data to server...')
+      registrationError.value = '' // Clear any previous error
       try {
         const response = await axios.post('http://localhost:5170/auth/register', values)
         console.log('Registration successful')
@@ -36,8 +40,13 @@ export default {
           response.data.token
         )
         router.push('/')
-      } catch (error) {
+      } catch (error: any) {
         console.error('Registration failed:', error)
+        if (error.response?.data === 'Username already exists') {
+          registrationError.value = 'This username is already taken. Please choose another one.'
+        } else {
+          registrationError.value = 'Registration failed. Please try again.'
+        }
       }
     })
 
@@ -54,6 +63,7 @@ export default {
       switchToLogin,
       isSubmitting,
       meta,
+      registrationError
     }
   },
 }
@@ -67,6 +77,9 @@ export default {
       <form @submit.prevent="registerUser">
         <div id="formTitle">
           <h1>Register</h1>
+        </div>
+        <div v-if="registrationError" class="error-message">
+          {{ registrationError }}
         </div>
         <div class="form-group">
           <label id="usernameLabel">Username</label>
@@ -150,6 +163,16 @@ input:focus {
   color: #e74c3c;
   font-size: 0.875rem;
   margin-top: 0.5rem;
+}
+
+.error-message {
+  background-color: #fee2e2;
+  border: 1px solid #ef4444;
+  color: #dc2626;
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  text-align: center;
 }
 
 #registerBtn {
