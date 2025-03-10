@@ -5,11 +5,14 @@ import { useRouter } from 'vue-router'
 import { saveUserInfo } from '@/stores/userInfo'
 import { useCalculatorStore } from '@/stores/calculatorStore'
 import axios from 'axios'
+import { ref } from 'vue'
+
 export default {
   setup(props, ctx) {
     const router = useRouter()
     const store = saveUserInfo()
     const calcStore = useCalculatorStore()
+    const loginError = ref('')
 
     //Define the validation schema
     const schema = yup.object({
@@ -28,6 +31,7 @@ export default {
     //Form submit handler
     const loginUser = handleSubmit(async (values) => {
       console.log('sending data to server...')
+      loginError.value = ''
       try {
         const response = await axios.post('http://localhost:5170/auth/login', values)
         console.log('Login successful')
@@ -41,8 +45,13 @@ export default {
         )
         await updateHistory(response.data.user.username, response.data.user.password, response.data.token)
         router.push('/')
-      } catch (error) {
+      } catch (error: any) {
         console.error('Login failed:', error)
+        if (error.response?.status === 401) {
+          loginError.value = 'Invalid username or password. Please try again.'
+        } else {
+          loginError.value = 'An error occurred during login. Please try again.'
+        }
       }
     })
 
@@ -82,6 +91,7 @@ export default {
       switchToRegister,
       isSubmitting,
       meta,
+      loginError,
     }
   },
 }
@@ -94,6 +104,9 @@ export default {
       <form @submit.prevent="loginUser">
         <div id="formTitle">
           <h1>Login</h1>
+        </div>
+        <div v-if="loginError" class="error-message">
+          {{ loginError }}
         </div>
         <div class="form-group">
           <label id="usernameLabel">Username</label>
@@ -216,5 +229,15 @@ input:focus {
 #submit:disabled {
   background-color: #cbd5e0;
   cursor: not-allowed;
+}
+
+.error-message {
+  background-color: #fee2e2;
+  border: 1px solid #ef4444;
+  color: #dc2626;
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  text-align: center;
 }
 </style>
