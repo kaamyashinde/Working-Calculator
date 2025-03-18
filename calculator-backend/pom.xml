@@ -79,6 +79,33 @@
     <version>0.11.5</version>
     <scope>runtime</scope>
   </dependency>
+    <!-- JUnit 5 for Testing -->
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <scope>test</scope>
+    </dependency>
+
+    <!-- Spring Boot Test for Integration and MockMvc -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <scope>test</scope>
+    </dependency>
+
+    <!-- Mockito for mocking dependencies -->
+    <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <scope>test</scope>
+    </dependency>
+
+    <!-- H2 Database for in-memory testing -->
+    <dependency>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+        <scope>test</scope>
+    </dependency>
 	</dependencies>
 
 	<build>
