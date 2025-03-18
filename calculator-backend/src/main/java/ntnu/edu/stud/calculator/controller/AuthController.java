@@ -11,9 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = "http://localhost:5173")
+@Tag(name = "Authentication Controller", description = "Handles user authentication and registration")
 public class AuthController {
     @Autowired
     private UserService userService;
@@ -24,8 +28,8 @@ public class AuthController {
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
 
-    //Endpoint for registering a new user
     @PostMapping("/register")
+    @Operation(summary = "Register a new user", description = "Creates a new user and generates a JWT token")
     public ResponseEntity<?> register(@RequestBody User user) {
         try {
             logger.info("Registering new user: {}", user.getUsername());
@@ -42,8 +46,7 @@ public class AuthController {
         }
     }
 
-    //Endpoint for loggin in an user, without sessions / tokens (will be implemented in part 2)
-    // Endpoint to login and generate a JWT token
+    @Operation(summary = "Login a user", description = "Generates a JWT token for the user")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User loginRequest) {
         return userService.login(loginRequest.getUsername(), loginRequest.getPassword())
@@ -55,12 +58,13 @@ public class AuthController {
                 .orElse(ResponseEntity.status(401).body(new LoginResponse(null, null)));
     }
 
+    @Operation(summary = "Refresh a token", description = "Generates a new JWT token for the user")
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshToken(@RequestHeader("Authorization") String bearerToken) {
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             String token = bearerToken.substring(7);
             String username = jwUtil.validateTokenAndGetUsername(token);
-            
+                    
             if (username != null) {
                 String newToken = jwUtil.generateToken(username);
                 return ResponseEntity.ok(new LoginResponse(newToken, null));

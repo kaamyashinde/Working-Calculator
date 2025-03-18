@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +30,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:5173")
+@Tag(name = "Calculator Controller", description = "Handles calculation operations")
 public class CalculatorController {
   @Autowired
   private CalculatorService calculatorService;
@@ -37,6 +42,7 @@ public class CalculatorController {
   private static final Logger logger = LoggerFactory.getLogger(CalculatorController.class);
 
 
+  @Operation(summary = "Perform a calculation", description = "Takes an expression and returns the computed result.")
   @PostMapping("/calculate")
   public ResponseEntity<Calculation> calculate(@RequestBody Map<String, String> request) {
     try {
@@ -58,16 +64,7 @@ public class CalculatorController {
     }
   }
 
-  /*
-  public CalculationResponse calculate(@RequestBody CalculationRequest request) {
-    logger.info("Received calculation request: {}", request.getExpression());
-    String result = calculatorService.performCalculation(request.getExpression());
-    CalculationResponse response = new CalculationResponse(result, request.getExpression());
-    return response;
-  } */
-
-
-  //Endpoing for getting all calculations for an user
+  @Operation(summary = "Get calculation history", description = "Returns a paginated list of calculations for the authenticated user.")
   @GetMapping("/history")
   public ResponseEntity<?> getHistory(
       @RequestParam(defaultValue = "0") int page,
